@@ -1,7 +1,7 @@
 package com.bbva.datioamproduct.fdevdatio.videogames
 
 import com.bbva.datioamproduct.fdevdatio.videogames.common.ConfigConstants._
-import com.bbva.datioamproduct.fdevdatio.videogames.utils.{IOUtils, SuperConfig}
+import com.bbva.datioamproduct.fdevdatio.videogames.utils.{IOUtils, SuperConfig, extendDataset}
 import com.datio.dataproc.sdk.api.SparkProcess
 import com.datio.dataproc.sdk.api.context.RuntimeContext
 import com.typesafe.config.Config
@@ -24,12 +24,10 @@ class VideogamesJob extends SparkProcess with IOUtils{
 
     mapDs("videogamesInfo").show()
     mapDs("videogamesSales").show()
-    mapDs("videogamesSales")
-      .select(
-        f.mean(f.col("na_sales_per")).alias("Promedio ventas japon"),
-        f.mean(f.col("jp_sales_per")).alias("Promedio ventas EUA"),
-        f.mean(f.col("global_sales_per")).alias("Promedio ventas globales")
-      ).show
+
+
+    // Punto 1.1
+    mapDs("videogamesSales").promediosVenta.show
     0
   }
 }
