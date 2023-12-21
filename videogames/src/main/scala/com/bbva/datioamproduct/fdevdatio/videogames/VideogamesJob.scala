@@ -12,15 +12,32 @@ import org.slf4j.{Logger, LoggerFactory}
 
 
 class VideogamesJob extends SparkProcess with IOUtils{
-    private val logger:Logger = LoggerFactory.getLogger(this.getClass)
-    override def getProcessId: String = "VideogamesJob"
-    override def runProcess(runtimeContext: RuntimeContext): Int = {
-        val config: Config = runtimeContext.getConfig
-        val mapDs: Map[String, Dataset[Row]] = config.readInputs
+
+  private val logger:Logger = LoggerFactory.getLogger(this.getClass)
+
+  override def getProcessId: String = "VideogamesJob"
+
+  override def runProcess(runtimeContext: RuntimeContext): Int = {
+
+    val config: Config = runtimeContext.getConfig
+
+    val mapDs: Map[String, Dataset[Row]] = config.readInputs
 
 
         // Punto 1.1
-        mapDs("videogamesSales").promediosVenta.show()
+        //mapDs("videogamesSales").promediosVenta.show()
+
+
+        //Punto 1.3
+        val ds1: Dataset[Row] = mapDs("videogamesInfo")
+        val ds2: Dataset[Row] = mapDs("videogamesSales")
+
+        val dsp = ds1.select(f.col("videogame_name"),f.col("videogame_id"),f.col("release_year"))
+        val ds3: Dataset[Row] = ds2.join(dsp,Seq("videogame_id"),"inner")
+        val top3 = ds3.top3MasVendidos
+        top3.show
+
+
         // Punto 1.4
 
         def topByConsole: Dataset[Row] = {
@@ -40,7 +57,7 @@ class VideogamesJob extends SparkProcess with IOUtils{
                 .filter("rank <= 10")
         }
 
-        topByConsole.show(50)
+        //topByConsole.show(50)
 
         0
   }
