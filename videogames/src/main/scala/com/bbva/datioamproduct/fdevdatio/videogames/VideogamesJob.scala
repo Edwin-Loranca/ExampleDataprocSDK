@@ -20,6 +20,9 @@ class VideogamesJob extends SparkProcess with IOUtils{
         val config: Config = runtimeContext.getConfig
         val mapDs: Map[String, Dataset[Row]] = config.readInputs
 
+    mapDs("videogamesInfo").show()
+    mapDs("videogamesSales").show()
+
 
     // Punto 1.1
     mapDs("videogamesSales").promediosVenta.show
@@ -53,8 +56,6 @@ class VideogamesJob extends SparkProcess with IOUtils{
         )
         .filter("rank <= 10")
     }
-
-    topByConsole.show(50)
 
     //Punto 1.5
     val videogamesInfoDs: Dataset[Row] = mapDs("videogamesInfo")
