@@ -6,6 +6,8 @@ import com.datio.dataproc.sdk.api.SparkProcess
 import com.datio.dataproc.sdk.api.context.RuntimeContext
 import com.typesafe.config.Config
 import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.{Column, Dataset, Row, functions => f}
+import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.{functions => f}
 import org.apache.spark.sql.{Dataset, Row}
 import org.slf4j.{Logger, LoggerFactory}
@@ -29,6 +31,10 @@ class VideogamesJob extends SparkProcess with IOUtils{
 
     // Punto 1.1
     mapDs("videogamesSales").promediosVenta.show
+
+    // Punto 1.2
+    mapDs("videogamesInfo").leastSalesPlatformInfo(mapDs("videogamesSales")).show
+
 
     //Punto 1.4
     def topByConsole: Dataset[Row] = {
