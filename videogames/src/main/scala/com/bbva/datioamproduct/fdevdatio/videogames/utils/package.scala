@@ -34,6 +34,7 @@ package object utils {
           f.mean(f.col("global_sales_per")).alias("Promedio_ventas_globales")
           )
     }
+
     //Punto 1.5
     def creacionColumnas: Dataset[Row] = {
       dataSet

@@ -29,6 +29,7 @@ class VideogamesJob extends SparkProcess with IOUtils{
 
     // Punto 1.1
     mapDs("videogamesSales").promediosVenta.show
+
     //Punto 1.4
     def topByConsole: Dataset[Row] = {
       val info = mapDs("videogamesInfo")
@@ -52,7 +53,6 @@ class VideogamesJob extends SparkProcess with IOUtils{
     //Punto 1.5
     val videogamesInfoDs: Dataset[Row] = mapDs("videogamesInfo")
     videogamesInfoDs.creacionColumnas.show()
-
 
     0
   }
