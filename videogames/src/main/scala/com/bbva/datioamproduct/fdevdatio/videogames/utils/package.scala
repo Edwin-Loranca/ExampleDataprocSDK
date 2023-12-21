@@ -22,4 +22,6 @@ package object utils {
 
   }
 
+//  implicit class
+
 }

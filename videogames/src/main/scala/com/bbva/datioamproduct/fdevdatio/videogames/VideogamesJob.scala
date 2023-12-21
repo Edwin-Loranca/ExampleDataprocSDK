@@ -5,6 +5,7 @@ import com.bbva.datioamproduct.fdevdatio.videogames.utils.{IOUtils, SuperConfig}
 import com.datio.dataproc.sdk.api.SparkProcess
 import com.datio.dataproc.sdk.api.context.RuntimeContext
 import com.typesafe.config.Config
+import org.apache.spark.sql.{functions => f}
 import org.apache.spark.sql.{Dataset, Row}
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -23,6 +24,12 @@ class VideogamesJob extends SparkProcess with IOUtils{
 
     mapDs("videogamesInfo").show()
     mapDs("videogamesSales").show()
+    mapDs("videogamesSales")
+      .select(
+        f.mean(f.col("na_sales_per")).alias("Promedio ventas japon"),
+        f.mean(f.col("jp_sales_per")).alias("Promedio ventas EUA"),
+        f.mean(f.col("global_sales_per")).alias("Promedio ventas globales")
+      ).show
     0
   }
 }
