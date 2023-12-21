@@ -34,6 +34,20 @@ package object utils {
           f.mean(f.col("global_sales_per")).alias("Promedio_ventas_globales")
           )
     }
+    //Punto 1.5
+    def creacionColumnas: Dataset[Row] = {
+      dataSet
+        .select(
+          //f.col("*"),
+          f.concat(f.col("publisher_name"), f.lit(" "), f.col("platform_na")).alias("complete_name"),
+          f.when(f.col("platform_na") === "nintendo", "E")
+            .when((f.col("videgoame_genre") === "Shooter") || (f.col("videgoame_genre") === "Fighting"), "M")
+            .when(f.col("videgoame_genre") === "Role-Playing", "T")
+            .otherwise("E")
+            .alias("clasification")
+        )
+    }
+
   }
 
 }

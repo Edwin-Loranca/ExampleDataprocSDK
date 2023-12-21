@@ -5,8 +5,7 @@ import com.bbva.datioamproduct.fdevdatio.videogames.utils.{IOUtils, SuperConfig,
 import com.datio.dataproc.sdk.api.SparkProcess
 import com.datio.dataproc.sdk.api.context.RuntimeContext
 import com.typesafe.config.Config
-import org.apache.spark.sql.{functions => f}
-import org.apache.spark.sql.{Dataset, Row}
+import org.apache.spark.sql.{Dataset, Row, functions => f}
 import org.slf4j.{Logger, LoggerFactory}
 
 
@@ -22,12 +21,12 @@ class VideogamesJob extends SparkProcess with IOUtils{
 
     val mapDs: Map[String, Dataset[Row]] = config.readInputs
 
-    mapDs("videogamesInfo").show()
-    mapDs("videogamesSales").show()
-
-
     // Punto 1.1
     mapDs("videogamesSales").promediosVenta.show
+
+    //Punto 1.5
+    val videogamesInfoDs: Dataset[Row] = mapDs("videogamesInfo")
+    videogamesInfoDs.creacionColumnas.show()
     0
   }
 }
