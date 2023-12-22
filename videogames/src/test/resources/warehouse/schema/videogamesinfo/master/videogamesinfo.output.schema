@@ -1,0 +1,65 @@
+{
+  "namespace": "kdit",
+  "name": "t_kdit_videogames_info",
+  "doc": "Tabla que contiene el historico de clientes dictaminados por el Comite de Comunicacion y Control (CCC).",
+  "database": "master",
+  "storageZone": "MASTERDATA",
+  "storageType": "HDFS-Parquet",
+  "physicalPath": "/data/master/fdev/data/t_smd_players",
+  "securityLevel": "L1",
+  "type": "record",
+  "fields": [{
+    "name": "cutoff_date",
+    "type": "date",
+    "logicalFormat": "DATE",
+    "deleted": false,
+    "metadata": false,
+    "default": "",
+    "format": "yyyy-MM-dd",
+    "locale": "mx"
+  }, {
+    "name": "videogame_id",
+    "type": ["string", "null"],
+    "logicalFormat": "NUMERIC SHORT",
+    "deleted": false,
+    "metadata": false,
+    "default": ""
+  }, {
+    "name": "videogame_name",
+    "type": ["string", "null"],
+    "logicalFormat": "ALPHANUMERIC(150)",
+    "deleted": false,
+    "metadata": false,
+    "default": ""
+  }, {
+    "name": "platform_na",
+    "type": ["string", "null"],
+    "logicalFormat": "ALPHANUMERIC(150)",
+    "deleted": false,
+    "metadata": false,
+    "default": ""
+  }, {
+    "name": "release_year",
+    "type": ["date", "null"],
+    "logicalFormat": "DATE",
+    "deleted": false,
+    "metadata": false,
+    "default": "",
+    "format": "yyyy",
+    "locale": "mx"
+  }, {
+    "name": "videgoame_genre",
+    "type": ["string", "null"],
+    "logicalFormat": "ALPHANUMERIC(150)",
+    "deleted": false,
+    "metadata": false,
+    "default": ""
+  }, {
+    "name": "publisher_name",
+    "type": ["string", "null"],
+    "logicalFormat": "ALPHANUMERIC(150)",
+    "deleted": false,
+    "metadata": false,
+    "default": ""
+  }]
+}

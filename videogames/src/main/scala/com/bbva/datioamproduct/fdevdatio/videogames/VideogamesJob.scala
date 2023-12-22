@@ -14,11 +14,16 @@ import org.slf4j.{Logger, LoggerFactory}
 
 
 class VideogamesJob extends SparkProcess with IOUtils{
-    private val logger:Logger = LoggerFactory.getLogger(this.getClass)
-    override def getProcessId: String = "VideogamesJob"
-    override def runProcess(runtimeContext: RuntimeContext): Int = {
-        val config: Config = runtimeContext.getConfig
-        val mapDs: Map[String, Dataset[Row]] = config.readInputs
+
+  private val logger:Logger = LoggerFactory.getLogger(this.getClass)
+
+  override def getProcessId: String = "VideogamesJob"
+
+  override def runProcess(runtimeContext: RuntimeContext): Int = {
+
+    val config: Config = runtimeContext.getConfig
+
+    val mapDs: Map[String, Dataset[Row]] = config.readInputs
 
     mapDs("videogamesInfo").show()
     mapDs("videogamesSales").show()
@@ -30,14 +35,6 @@ class VideogamesJob extends SparkProcess with IOUtils{
     // Punto 1.2
     mapDs("videogamesInfo").leastSalesPlatformInfo(mapDs("videogamesSales")).show
 
-    //Punto 1.3
-    val ds1: Dataset[Row] = mapDs("videogamesInfo")
-    val ds2: Dataset[Row] = mapDs("videogamesSales")
-
-    val dsp = ds1.select(f.col("videogame_name"),f.col("videogame_id"),f.col("release_year"))
-    val ds3: Dataset[Row] = ds2.join(dsp,Seq("videogame_id"),"inner")
-    val top3 = ds3.top3MasVendidos
-    top3.show
 
     //Punto 1.4
     def topByConsole: Dataset[Row] = {
@@ -57,10 +54,20 @@ class VideogamesJob extends SparkProcess with IOUtils{
         .filter("rank <= 10")
     }
 
+    val topGamesByConsole: Dataset[Row] = topByConsole
+    topGamesByConsole.show()
     //Punto 1.5
     val videogamesInfoDs: Dataset[Row] = mapDs("videogamesInfo")
     videogamesInfoDs.creacionColumnas.show()
 
+    def concatDf(dataSet1: Dataset[Row], dataSet2: Dataset[Row]): Dataset[Row] = {
+      dataSet1
+        .join(dataSet2, Seq("videogame_name"), "inner")
+        .select("*")
+    }
+
+    val dsFinal: Dataset[Row] = concatDf(topGamesByConsole, videogamesInfoDs)
+    dsFinal.show()
     0
   }
 }
