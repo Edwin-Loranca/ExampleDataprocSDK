@@ -54,12 +54,21 @@ class VideogamesJob extends SparkProcess with IOUtils{
         .filter("rank <= 10")
     }
 
-    topByConsole.show(50)
-
+    val topGamesByConsole: Dataset[Row] = topByConsole
+    topGamesByConsole.show()
     //Punto 1.5
     val videogamesInfoDs: Dataset[Row] = mapDs("videogamesInfo")
     videogamesInfoDs.creacionColumnas.show()
 
+    //punto 1.6
+    def concatDf(dataSet1: Dataset[Row], dataSet2: Dataset[Row]): Dataset[Row] = {
+      dataSet1
+        .join(dataSet2, Seq("videogame_name"), "inner")
+        .select("*")
+    }
+
+    val dsFinal: Dataset[Row] = concatDf(topGamesByConsole, videogamesInfoDs)
+    dsFinal.show()
     0
   }
 }

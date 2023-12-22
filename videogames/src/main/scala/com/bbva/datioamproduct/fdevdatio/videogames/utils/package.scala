@@ -32,7 +32,7 @@ package object utils {
           f.mean(f.col("na_sales_per")).alias("Promedio_ventas_japon"),
           f.mean(f.col("jp_sales_per")).alias("Promedio_ventas_EUA"),
           f.mean(f.col("global_sales_per")).alias("Promedio_ventas_globales")
-          )
+        )
     }
 
     // Punto 1.2
@@ -49,7 +49,7 @@ package object utils {
       val least_sales_platform: String = aux
         .select(
           difference(aux.columns, Seq()) :+
-          f.sum(f.col("global_sales_per")).over(windowPlatform).alias("sum_sales_platform"): _*
+            f.sum(f.col("global_sales_per")).over(windowPlatform).alias("sum_sales_platform"): _*
         )
         .sort(f.col("sum_sales_platform").asc)
         .collect()(0)
@@ -57,7 +57,22 @@ package object utils {
 
       aux.filter(f.col("platform_na") === least_sales_platform)
     }
+    //Punto 1.3
+    def top3MasVendidos: Dataset[Row] = {
 
+      var ds= dataSet.select(
+        f.col("global_sales_per"),
+        f.col("videogame_name"),
+        f.year(f.to_timestamp(f.col("release_year"), "yyy-MM-dd")).alias("year")
+      )
+
+
+      val window_1 = Window.partitionBy(f.col("year")).orderBy(f.col("global_sales_per").desc)
+      ds = ds.withColumn("rango", f.row_number.over(window_1)).orderBy(f.col("year"),f.col("rango").asc)
+      ds = ds.filter(f.col("rango") <= 3)
+      ds
+
+    }
 
     //Punto 1.5
     def creacionColumnas: Dataset[Row] = {
