@@ -1,0 +1,75 @@
+{
+  "namespace": "fdev",
+  "name": "t_kdit_videogames_sales",
+  "doc": "Tabla que contiene el historico de clientes dictaminados por el Comite de Comunicacion y Control (CCC).",
+  "database": "master",
+  "storageZone": "MASTERDATA",
+  "storageType": "HDFS-Parquet",
+  "physicalPath": "/data/master/fdev/data/t_smd_players",
+  "partitions": ["cutoff_date"],
+  "securityLevel": "L1",
+  "type": "record",
+  "fields": [{
+    "name": "cutoff_date",
+    "type": "date",
+    "logicalFormat": "DATE",
+    "deleted": false,
+    "metadata": false,
+    "default": "",
+    "format": "yyyy-MM-dd",
+    "locale": "mx"
+  }, {
+    "name": "videogame_id",
+    "type": ["null", "int32"],
+    "logicalFormat": "NUMERIC SHORT",
+    "deleted": false,
+    "metadata": false,
+    "default": null,
+    "format": "5,2"
+  }, {
+    "name": "na_sales_per",
+    "type": ["null", "decimal(5,2)"],
+    "logicalFormat": "DECIMAL(5,2)",
+    "deleted": false,
+    "metadata": false,
+    "default": null,
+    "format": "5,2",
+    "locale": "mx"
+  }, {
+    "name": "eu_sales_per",
+    "type": ["null", "decimal(5,2)"],
+    "logicalFormat": "DECIMAL(5,2)",
+    "deleted": false,
+    "metadata": false,
+    "default": null,
+    "format": "5,2",
+    "locale": "mx"
+  }, {
+    "name": "jp_sales_per",
+    "type": ["null", "decimal(5,2)"],
+    "logicalFormat": "DECIMAL(5,2)",
+    "deleted": false,
+    "metadata": false,
+    "default": null,
+    "format": "5,2",
+    "locale": "mx"
+  }, {
+    "name": "other_sales_per",
+    "type": ["null", "decimal(5,2)"],
+    "logicalFormat": "DECIMAL(5,2)",
+    "deleted": false,
+    "metadata": false,
+    "default": null,
+    "format": "5,2",
+    "locale": "mx"
+  }, {
+    "name": "global_sales_per",
+    "type": ["null", "decimal(5,2)"],
+    "logicalFormat": "DECIMAL(5,2)",
+    "deleted": false,
+    "metadata": false,
+    "default": null,
+    "format": "5,2",
+    "locale": "mx"
+  }]
+}
