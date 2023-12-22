@@ -60,6 +60,7 @@ class VideogamesJob extends SparkProcess with IOUtils{
     val videogamesInfoDs: Dataset[Row] = mapDs("videogamesInfo")
     videogamesInfoDs.creacionColumnas.show()
 
+    //punto 1.6
     def concatDf(dataSet1: Dataset[Row], dataSet2: Dataset[Row]): Dataset[Row] = {
       dataSet1
         .join(dataSet2, Seq("videogame_name"), "inner")
