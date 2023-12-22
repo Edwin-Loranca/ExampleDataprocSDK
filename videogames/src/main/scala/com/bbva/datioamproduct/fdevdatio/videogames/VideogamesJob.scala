@@ -6,10 +6,7 @@ import com.datio.dataproc.sdk.api.SparkProcess
 import com.datio.dataproc.sdk.api.context.RuntimeContext
 import com.typesafe.config.Config
 import org.apache.spark.sql.expressions.Window
-import org.apache.spark.sql.{Column, Dataset, Row, functions => f}
-import org.apache.spark.sql.expressions.Window
-import org.apache.spark.sql.{functions => f}
-import org.apache.spark.sql.{Dataset, Row}
+import org.apache.spark.sql.{Dataset, Row, functions => f}
 import org.slf4j.{Logger, LoggerFactory}
 
 
@@ -22,12 +19,10 @@ class VideogamesJob extends SparkProcess with IOUtils{
   override def runProcess(runtimeContext: RuntimeContext): Int = {
 
     val config: Config = runtimeContext.getConfig
-
     val mapDs: Map[String, Dataset[Row]] = config.readInputs
 
-    mapDs("videogamesInfo").show()
-    mapDs("videogamesSales").show()
-
+//    mapDs("videogamesInfo").show()
+//    mapDs("videogamesSales").show()
 
     // Punto 1.1
     mapDs("videogamesSales").promediosVenta.show
@@ -35,8 +30,10 @@ class VideogamesJob extends SparkProcess with IOUtils{
     // Punto 1.2
     mapDs("videogamesInfo").leastSalesPlatformInfo(mapDs("videogamesSales")).show
 
+    // Punto 1.3
+    mapDs("videogamesInfo").join(mapDs("videogamesSales"), Seq("videogame_id"), "inner").top3MasVendidos.show
 
-    //Punto 1.4
+    // Punto 1.4
     def topByConsole: Dataset[Row] = {
       val info = mapDs("videogamesInfo")
       val sales = mapDs("videogamesSales")
@@ -56,11 +53,12 @@ class VideogamesJob extends SparkProcess with IOUtils{
 
     val topGamesByConsole: Dataset[Row] = topByConsole
     topGamesByConsole.show()
+
     //Punto 1.5
     val videogamesInfoDs: Dataset[Row] = mapDs("videogamesInfo")
     videogamesInfoDs.creacionColumnas.show()
 
-    //punto 1.6
+    // Punto 1.6
     def concatDf(dataSet1: Dataset[Row], dataSet2: Dataset[Row]): Dataset[Row] = {
       dataSet1
         .join(dataSet2, Seq("videogame_name"), "inner")
