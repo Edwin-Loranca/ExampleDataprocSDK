@@ -64,7 +64,7 @@ class VideogamesJob extends SparkProcess with IOUtils{
     //Punto 1.5
 //    val videogamesInfoDs: Dataset[Row] = mapDs(InfoDs)
 //    videogamesInfoDs.asignacionClasificiacion.show()
-    fullVideogames.asignacionClasificiacion.show()
+    mapDs(InfoDs).asignacionClasificiacion.show()
 
     // Punto 1.6
     def concatDf(dataSet1: Dataset[Row], dataSet2: Dataset[Row]): Dataset[Row] = {
