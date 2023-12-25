@@ -32,37 +32,39 @@ class VideogamesJob extends SparkProcess with IOUtils{
     fullVideogames.promediosVenta.show
 
     // Punto 1.2
-    fullVideogames.leastSalesPlatformInfo.show
+    fullVideogames.plataformaMenosVendida.show
 
     // Punto 1.3
 //    mapDs(InfoDs).join(mapDs(SalesDs), Seq(IdCol), "inner").top3MasVendidos.show
     println("Punto 1.3")
-    fullVideogames.top3MasVendidos.show
+    fullVideogames.top3MasVendidosXAnio.show
 
     // Punto 1.4
-    def topByConsole: Dataset[Row] = {
-      val info = mapDs(InfoDs)
-      val sales = mapDs(SalesDs)
-
-      val consoles = List("3DS", "GB", "GBA", "NES", "N64", "SNES", "Wii", "WiiU", "XB", "XONE", "X360", "PS", "PS2", "PS3", "PS4", "PSP", "PSV")
-      val window = Window.partitionBy(f.col("platform_na")).orderBy(f.desc("global_sales_per"))
-      info
-        .join(sales, Seq(IdCol), "inner")
-        .filter(f.col("platform_na").isin(consoles: _*))
-        .select(
-          f.col("platform_na"),
-          f.col("videogame_name"),
-          f.rank().over(window).alias("rank")
-        )
-        .filter("rank <= 10")
-    }
-
-    val topGamesByConsole: Dataset[Row] = topByConsole
-    topGamesByConsole.show()
+//    def topByConsole: Dataset[Row] = {
+//      val info = mapDs(InfoDs)
+//      val sales = mapDs(SalesDs)
+//
+//      val consoles = List("3DS", "GB", "GBA", "NES", "N64", "SNES", "Wii", "WiiU", "XB", "XONE", "X360", "PS", "PS2", "PS3", "PS4", "PSP", "PSV")
+//      val window = Window.partitionBy(f.col("platform_na")).orderBy(f.desc("global_sales_per"))
+//      info
+//        .join(sales, Seq(IdCol), "inner")
+//        .filter(f.col("platform_na").isin(consoles: _*))
+//        .select(
+//          f.col("platform_na"),
+//          f.col("videogame_name"),
+//          f.rank().over(window).alias("rank")
+//        )
+//        .filter("rank <= 10")
+//    }
+//
+//    val topGamesByConsole: Dataset[Row] = topByConsole
+//    topGamesByConsole.show()
+    fullVideogames.top10MasVendidosXConsola.show
 
     //Punto 1.5
-    val videogamesInfoDs: Dataset[Row] = mapDs(InfoDs)
-    videogamesInfoDs.creacionColumnas.show()
+//    val videogamesInfoDs: Dataset[Row] = mapDs(InfoDs)
+//    videogamesInfoDs.asignacionClasificiacion.show()
+    fullVideogames.asignacionClasificiacion.show()
 
     // Punto 1.6
     def concatDf(dataSet1: Dataset[Row], dataSet2: Dataset[Row]): Dataset[Row] = {
@@ -71,8 +73,8 @@ class VideogamesJob extends SparkProcess with IOUtils{
         .select("*")
     }
 
-    val dsFinal: Dataset[Row] = concatDf(topGamesByConsole, videogamesInfoDs)
-    dsFinal.show()
+//    val dsFinal: Dataset[Row] = concatDf(topGamesByConsole, videogamesInfoDs)
+//    dsFinal.show()
     0
   }
 }

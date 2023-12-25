@@ -42,7 +42,7 @@ package object utils {
 
     // Punto 1.2
     // Realizar una función que obtenga un DataFrame que devuelva la información de la plataforma con menos ventas en todo el mundo
-    def leastSalesPlatformInfo: Dataset[Row] = {
+    def plataformaMenosVendida: Dataset[Row] = {
       // Get the platform with the least sold games
       val least_sales_platform: String = dataSet
         .select(f.col(PlatformCol), f.col("global_sales_per"))
@@ -56,7 +56,7 @@ package object utils {
 
     //Punto 1.3
     // Realiza una función que devuelva el top 3 de los juegos más vendidos por cada año.
-    def top3MasVendidos: Dataset[Row] = {
+    def top3MasVendidosXAnio: Dataset[Row] = {
 
 //      var ds = dataSet.select(
 //        f.col("global_sales_per"),
@@ -111,7 +111,7 @@ package object utils {
           f.col("*"),
           f.rank().over(platformWindow).alias("rank")
         )
-        .filter(f.col("rank").isin(1 to 10))
+        .filter(f.col("rank").isin((1 to 10).toList :_*))
 
     }
 
@@ -121,16 +121,16 @@ package object utils {
     - Añadir al dataframe una columna llamada “clasification” generada a partir de la siguiente regla:
         Si es de plataforma nintendo->E, Si el género es Shooter o Fighting -> M, Si el género es Role-Playing -> T, otherwiswe E
      */
-    def creacionColumnas: Dataset[Row] = {
+    def asignacionClasificiacion: Dataset[Row] = {
       dataSet
         .select(
-          //f.col("*"),
+          f.col("*"),
           f.concat(f.col("publisher_name"), f.lit(" "), f.col(PlatformCol)).alias("complete_name"),
           f.when(f.col(PlatformCol) === "nintendo", "E")
             .when((f.col("videgoame_genre") === "Shooter") || (f.col("videgoame_genre") === "Fighting"), "M")
             .when(f.col("videgoame_genre") === "Role-Playing", "T")
             .otherwise("E")
-            .alias("clasification")
+            .alias("classification")
         )
     }
 
