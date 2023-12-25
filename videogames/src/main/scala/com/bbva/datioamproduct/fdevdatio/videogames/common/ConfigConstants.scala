@@ -30,5 +30,4 @@ object ConfigConstants {
   val HeaderOption: String = "header"
   val OverrideSchemaOption: String = "overrideSchema"
   val MergeSchemaOption: String = "mergeSchema"
-
 }

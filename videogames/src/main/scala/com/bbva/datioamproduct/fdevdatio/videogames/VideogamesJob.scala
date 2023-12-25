@@ -1,7 +1,8 @@
 package com.bbva.datioamproduct.fdevdatio.videogames
 
+import com.bbva.datioamproduct.fdevdatio.videogames.common.ColumnConstants._
 import com.bbva.datioamproduct.fdevdatio.videogames.common.ConfigConstants._
-import com.bbva.datioamproduct.fdevdatio.videogames.utils.{IOUtils, SuperConfig, extendDataset}
+import com.bbva.datioamproduct.fdevdatio.videogames.utils.{IOUtils, SuperConfig, difference, extendDataset}
 import com.datio.dataproc.sdk.api.SparkProcess
 import com.datio.dataproc.sdk.api.context.RuntimeContext
 import com.typesafe.config.Config
@@ -19,29 +20,34 @@ class VideogamesJob extends SparkProcess with IOUtils{
   override def runProcess(runtimeContext: RuntimeContext): Int = {
 
     val config: Config = runtimeContext.getConfig
+
     val mapDs: Map[String, Dataset[Row]] = config.readInputs
 
-//    mapDs("videogamesInfo").show()
-//    mapDs("videogamesSales").show()
+    val fullVideogames =  mapDs(InfoDs)
+//      .select(difference(mapDs(InfoDs).columns, Seq("cutoff_date")): _*)
+      .drop(f.col("cutoff_date"))
+      .join(mapDs(SalesDs), Seq(IdCol), "inner")
 
     // Punto 1.1
-    mapDs("videogamesSales").promediosVenta.show
+    fullVideogames.promediosVenta.show
 
     // Punto 1.2
-    mapDs("videogamesInfo").leastSalesPlatformInfo(mapDs("videogamesSales")).show
+    fullVideogames.leastSalesPlatformInfo.show
 
     // Punto 1.3
-    mapDs("videogamesInfo").join(mapDs("videogamesSales"), Seq("videogame_id"), "inner").top3MasVendidos.show
+//    mapDs(InfoDs).join(mapDs(SalesDs), Seq(IdCol), "inner").top3MasVendidos.show
+    println("Punto 1.3")
+    fullVideogames.top3MasVendidos.show
 
     // Punto 1.4
     def topByConsole: Dataset[Row] = {
-      val info = mapDs("videogamesInfo")
-      val sales = mapDs("videogamesSales")
+      val info = mapDs(InfoDs)
+      val sales = mapDs(SalesDs)
 
       val consoles = List("3DS", "GB", "GBA", "NES", "N64", "SNES", "Wii", "WiiU", "XB", "XONE", "X360", "PS", "PS2", "PS3", "PS4", "PSP", "PSV")
       val window = Window.partitionBy(f.col("platform_na")).orderBy(f.desc("global_sales_per"))
       info
-        .join(sales, Seq("videogame_id"), "inner")
+        .join(sales, Seq(IdCol), "inner")
         .filter(f.col("platform_na").isin(consoles: _*))
         .select(
           f.col("platform_na"),
@@ -55,7 +61,7 @@ class VideogamesJob extends SparkProcess with IOUtils{
     topGamesByConsole.show()
 
     //Punto 1.5
-    val videogamesInfoDs: Dataset[Row] = mapDs("videogamesInfo")
+    val videogamesInfoDs: Dataset[Row] = mapDs(InfoDs)
     videogamesInfoDs.creacionColumnas.show()
 
     // Punto 1.6
